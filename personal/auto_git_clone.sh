@@ -27,11 +27,11 @@ currentPath=`pwd`
 echo "Current path is: $currentPath"
 
 echo "==============start excute git command========="
-$2
+$cloneCommand
 while [ $? != 0 ]; do
 	echo "git clone failed, git clone again========"
 	sleep 3
-	$2
+	$cloneCommand
 done
 
 
