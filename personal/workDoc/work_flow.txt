@@ -1,0 +1,706 @@
+拉代码：
+  ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  (1)上传秘钥：
+      
+      54服务器：cat /home/hanhongbo/.ssh/id_rsa.pub | ssh git@192.168.38.54 "cat >> ~/.ssh/authorized_keys"
+      
+      48服务器：cat /home/hanhongbo/.ssh/id_rsa.pub | ssh git@192.168.38.48 "cat >> ~/.ssh/authorized_keys"
+      
+      208服务器：cat /home/hanhongbo/.ssh/id_rsa.pub | ssh gerrit@192.168.38.208 "cat >> ~/.ssh/authorized_keys"
+
+  (2)修改本机repo：
+
+      54服务器： REPO_URL='ssh://git@192.168.38.54/server/repo'
+      208服务器：REPO_URL='ssh://gerrit@192.168.38.208/home/gerrit/server/repo'
+  
+
+         
+   正常的工作流程是 ：
+      A 用repo start 分支名 --all创建个人分支（每个问题都需要单独建分支）
+      B 用repo upload --re=liuxiaodan@wingtech.net 把本地修改的分支上传到gerrit 服务器,--re 指定评审人邮箱。
+
+
+      
+    cat ~/.ssh/id_rsa.pub | ssh hanhongbo@192.168.38.225 "cat >> ~/.ssh/authorized_keys"   
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    删除远程分支
+---------------------------------------------------------------------------------------------------------------
+
+git push aosp[origin]   :bra_xxx
+
+ping服务器命令：
+   
+   ssh -p 29418 192.168.38.248
+
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    合入某个commit id的修改
+---------------------------------------------------------------------------------------------------------------
+git cherry-pick 8c7fc1529cd73cc4ffbb2a13d67043f1344154bf
+
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    查看跟踪的分支
+---------------------------------------------------------------------------------------------------------------
+git remote show aosp
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    创建本地分支--跟踪到产品线
+---------------------------------------------------------------------------------------------------------------
+repo forall -c git branch --track b_product aosp/PRODUCT_LINE_SW_WINGTECH_V001
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    清理untrack的文件及文件夹
+---------------------------------------------------------------------------------------------------------------
+repo forall -c git clean -df
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    清理modify的文件
+---------------------------------------------------------------------------------------------------------------
+repo forall -c git reset --hard
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    回退提交
+---------------------------------------------------------------------------------------------------------------
+git reset work~1
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    代码回退到某个节点
+---------------------------------------------------------------------------------------------------------------
+git reset --hard  commit_id (934013736d263c3fe8002419f4fb49e55fd36252)
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    回退到某个tag
+---------------------------------------------------------------------------------------------------------------
+repo forall -c git reset --hard TAG_SW_98512A_V010_HENGYUA
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    git查看并输出log:
+---------------------------------------------------------------------------------------------------------------
+  repo forall -c git log --author=hanhongbo > ~/hanhongbo.log
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    打log
+---------------------------------------------------------------------------------------------------------------
+    Log.d("HHB","hhb 1102 setInitialDisplaySize : mHasSystemNavBar =" + mHasSystemNavBar);
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    注释书写
+---------------------------------------------------------------------------------------------------------------
+   //hanhongbo added for 98056-huaxinxunda custom request 20140507 begin 
+
+
+Modem:
+	NV_W：wnvitem.bin
+	NV_WCN：wcnnvitem.bin
+	Modem_W：wmodem.bin
+	DSP_W：   wdsp.bin
+	Modem_WCN：wcnmodem.bin
+
+---------------------------------------------------------------------------------------------------------------   
+    ====>    有关flash
+---------------------------------------------------------------------------------------------------------------
+flash 和 RAM : 
+32Gbits ==  4GB ROM
+4 Gbits  == 512MB RAM
+
+
+---------------------------------------------------------------------------------------------------------------
+    ====>    打TAG的方法                                      
+---------------------------------------------------------------------------------------------------------------
+    1 先在本地打TAG，命令为
+        repo forall -c git tag -f -a <TAG_NAME> -m "<TAG_DESCRIPTION>"
+        参数说明：
+            -f 可以更新之前打的同名TAG到新的节点；
+            -a 因为Gerrit只认Annotated Tag, 所以必须要用此参数，不然无法提交到服务器上；        
+            -m 如果不这样输，会弹出一大堆编辑框；
+            TAG_DESCRIPTION 尽可能简短，建议直接使用TAG_NAME
+    
+    2 发布到服务器，命令为
+        repo forall -c git push aosp <TAG_NAME>
+
+linux查找命令：
+    grep '字串' * -srin
+
+    find -name ".gitignore"
+
+卷log
+repo forall -c git log --since="2016-03-05" --pretty=format:"%h - %an, %ar : %s" > logs.txt
+
+mtk代码编译错误解决：
+   在alps\external\chromium_org\下查找“commit.h”
+   并删除搜索结果中的 $(LOCAL_PATH)/third_party/angle/.git/index
+
+展讯--查看分辨率
+kernel\arch\arm\boot\dts\sprd-scx35_sp7731gea.dts查看分辨率：
+fb_display_size
+
+
+拉美问题版本：
+  4024E_LA_AL_V2.2_151112
+
+Ubuntu 中的远程登录工具---Remmina
+
+
+1.分辨率定义：
+  ProjectConfig.mk文件中，
+   LCM_HEIGHT = 854
+   LCM_WIDTH = 480
+   
+2.资源选择文件：
+
+  device.mk中，
+  ifeq (480,$(strip $(LCM_WIDTH)))
+  
+3.Logo位置：
+  alps\vendor\mediatek\proprietary\bootable\bootloader\lk\dev\logo\fwvga
+  
+上海dailybuild 地址：ftp://192.168.7.245/8953_S89536AA1/
+
+添加账号：
+
+1.在本地编译机器上生产宫格密钥(在~/.ssh/id_rsa.pub文件中有生成的密钥)
+  ssh-keygen -t rsa
+
+
+.repo 下的提交
+   git push origin HEAD:refs/for/分支名称
+   
+查看windows密码缓存：net use
+清除windows密码缓存：net use /d *
+
+ssh无法远程登录解决方案：
+  ssh-keygen -t dsa -P '' -f  /etc/ssh/ssh_host_dsa_key  
+  ssh-keygen -t rsa -P '' -f  /etc/ssh/ssh_host_rsa_key
+
+上海repo 地址：
+REPO_URL="git://192.168.7.132/repo.git"
+REPO_REV='default'
+  
+删除一类文件或文件夹：
+   find . -name ".gitignore" | xargs rm -rf    
+
+
+修改分区：
+   alps\device\mediatek\build\build\tools\ptgen\MT6580 
+
+增加分区：
+   (1)build\
+   (2)device/mediatek\build\build\tools\ptgen\MT6580 
+   (3)vendor/mediatek/proprietary/hardware/fstab/mt6735/fstab.in
+
+ssh 报错：   
+   Unable to negotiate with 192.168.38.208 port 29418: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1
+   vi ~/.ssh/config 内容如下：
+     Host *
+     KexAlgorithms +diffie-hellman-group1-sha1   
+
+repo upload失败：
+    git push --no-thin aosp HEAD:refs/for/branchname
+	
+jack 服务启动位置：
+   alps/prebuilts/sdk/tools
+   启动命令：
+      ./jack-admin start-server
+   查看运行状态：
+      ./jack-admin server-stat
+jack 服务启动报错，主要是因为
+     /home/hanhongbo/.jack-server下的文件夹和文件的权限不对.
+	 正确的权限如下：
+		drwx------  4 hanhongbo hanhongbo    4096 10月 29 11:49 ./
+		drwxr-xr-x 29 hanhongbo hanhongbo    4096 10月 29 11:25 ../
+		-rw-------  1 hanhongbo hanhongbo    2090 10月 25 17:57 client.jks
+		-rw-------  1 hanhongbo hanhongbo    2802 10月 29 11:49 client.pem
+		-rw-------  1 hanhongbo hanhongbo     282 10月 25 17:57 config.properties
+		drwxr-xr-x  2 hanhongbo hanhongbo    4096 10月 25 17:58 jack/
+		-rwx------  1 hanhongbo hanhongbo 4378061 10月 25 17:57 launcher.jar*
+		drwx------  2 hanhongbo hanhongbo    4096 10月 29 11:49 logs/
+		-rwx------  1 hanhongbo hanhongbo 4758810 10月 25 17:57 server-1.jar*
+		-rw-------  1 hanhongbo hanhongbo    2067 10月 25 17:57 server.jks
+		-rw-------  1 hanhongbo hanhongbo    1042 10月 29 11:49 server.pem
+	  
+
+repo 服务切换：
+    
+	1. 修改本机的repo文件夹：
+	   REPO_URL='ssh://hanhongbo@192.168.38.99/home/hanhongbo/server/repo'
+	2. cat公钥：
+	   cat  ~/.ssh/id_rsa.pub | ssh hanhongbo@192.168.38.99 "cat >> ~/.ssh/authorized_keys"
+
+
+清除服务器上的公钥：
+    ssh-keygen -f "/home/hanhongbo/.ssh/known_hosts" -R [202.96.170.195]:29418
+
+	  
+jenkins 重新启动：
+     root用户进入：/root/jenkins
+	 执行：./do_jenkins.sh restart
+   
+   
+repo forall -c git log --date=iso --name-only --pretty=format:"%H |=====| %cn |=====| %cd |=====| %s" > gen_logs_tmpfile
+
+
+repo forall -c "git remote -v >> log.log && git log --date=iso --name-status --since 2016-12-10 >> log.log"
+
+
+repo forall -pc "git remote -v >> /home/hanhongbo/work/daily_build/code/6737/alps/result.log && git log --date=iso --name-status --since 2016-12-10 >> /home/hanhongbo/work/daily_build/code/6737/alps/result.log"
+
+
+git remote -v >> result.log && git log --date=iso --name-status --since 2016-12-10 >> result.log   
+
+vi 中全局去掉#
+   :%s/#//g
+   
+4G userdebug 的OTA命令：
+   build/tools/releasetools/ota_from_target_files -s device/mediatek/build/releasetools/mt_ota_from_target_files --block  -k build/target/product/security/testkey  -i 1.zip 2.zip update.zip
+
+git cherry-pick 二进制冲突   
+    git checkout FILE --ours [ --theirs ]
+
+gerrit 添加 Verified标签：
+    本地电脑操作
+    git init cfg
+    cd cfg
+    git remote add origin ssh://192.168.38.239:29418/All-Projects.git
+    git pull origin refs/meta/config
+    vi project.config
+   
+   [label "Verified"]
+       function?=?MaxWithBlock??
+       value = -1 Fails 
+       value = 0 No score 
+       value = +1 Verified 
+
+   
+   git commit -a -m 'Updated permissions'
+   git push origin HEAD:refs/meta/config
+
+  
+  
+服务器本地推送git库：
+   repo sync -l frameworks/base
+   
+   添加remote
+      cd frameworks/base 
+      git remote rm ssh-server ; git remote add ssh-server ~/review_site/git/platform/frameworks/base.git
+      repo start ap_master_2017.SPF.1.0 .
+      git push ssh-server ap_master_2017.SPF.1.0:ap_master_2017.SPF.1.0
+   
+    
+打印目录：
+    ls -Rl | grep  /  > ~/dir.txt    
+    
+网卡端口绑定：
+  #设置80端口默认跳转8081
+    sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8081
+
+  #永久保存设置80端口默认跳转8081
+    sudo service iptables-persistent save  （14.04 ）   
+
+    sudo netfilter-persistent save   （16.04 ）
+    sudo netfilter-persistent reload
+    
+新环境libssl问题：    
+   sudo apt-get install libssl-dev
+   sudo apt-get install aptitude
+   sudo aptitude install libssl-dev
+
+验证安装程序：
+    dpkg -l *libssl*      
+    
+创建git库：
+    ssh -p 29418 192.168.30.13 gerrit create-project wingtech/qc/lcd
+    
+    
+修改继承权限：
+   ssh -p 29418 192.168.30.13 gerrit set-project-parent  platform/vendor/qcom/proprietary/display/display-sdk -p  Wt-Product-rights
+
+   
+   
+高通推送代码常用操作：
+
+    repo forall -c 'git remote add ssh-server ssh://192.168.30.13:29418/$REPO_PROJECT.git $@'
+    
+    repo forall -c git remote rm ssh-server
+
+    repo forall -c git push ssh-server bra_MSM8953_N_spf2.0_driveronly 2>&1|tee push.log
+    
+    ssh -p 29418 192.168.30.13 gerrit set-project-parent  platform/vendor/qcom/proprietary/display/display-sdk -p  Wt-Product-rights   
+    
+7.71 jdk切换：
+    export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+    export JRE_HOME=${JAVA_HOME}/jre
+    export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib:$CLASSPATH
+    export PATH=${JAVA_HOME}/bin:~/bin:$PATH
+
+
+UE操作：
+    UE 行首插入： % 去匹配
+    UE 行尾插入： $ 去匹配
+    ^(*^)代表替换时匹配任意长度字符
+
+代码添加远程节点命令：
+    repo forall -c 'git remote add ssh-server ssh://192.168.30.51:29418/$REPO_PROJECT.git $@'
+
+google的repo源：
+     REPO_URL = 'https://gerrit.googlesource.com/git-repo'
+     
+
+导出分支差异：     
+在嘉兴代码下：
+  AP侧：
+    repo forall -c 'git remote add aaa_sh ssh://192.168.7.174:29418/8939/$REPO_PROJECT.git$@'
+    repo forall -c 'git remote remove aaa_sh'
+    
+    repo forall -c 'git pull aaa_sh master_spf2.0:aaa_sh'
+    
+    repo forall -pc git log --left-right aaa_sh...jiaxing_new >> ~/public/hanhongbo_248/spf2_master/jiaxing/ap/jx_sh-diff.log
+    
+    
+  在上海代码下：  
+    repo forall -c 'git remote add jiaxing ssh://192.168.30.13:29418/$REPO_PROJECT.git$@'
+    repo forall -c 'git pull jiaxing cp_master_spf2.0:jx'
+    repo forall -pc git log --left-right shanghai...jx >> ~/public/hanhongbo_248/spf2_master/shanghai/cp/sh_jx-diff.log
+         
+     
+gerrit 权限文件修改：
+  $ git init cfg  
+  $ cd cfg  
+  $ git remote add origin ssh://cibuild@192.168.30.13:29418/All-Projects.git  
+  $ git pull origin refs/meta/config  
+  $ vi project.config
+  $ git commit -a -m 'Updated permissions'  
+  $ git push origin HEAD:refs/meta/config     
+  
+  
+搜索替换命令：
+   sed -i "s/mm-camerasdk/mm-camerasdk-wentai/g" `grep mm-camerasdk -rl .`
+   sed -i "s/mm-camera/mm-camera-wentai/g" `grep -w 'mm-camera[^2s-]' -rl .`
+   sed -i "s/A4S/K92811AA1/g" `grep A4S -rl .`
+   
+7.245 mount失效 
+    mount --bind /data/artifacts ./artifacts
+
+模块只在 eng 模式下才会参与编译：
+      LOCAL_MODULE_TAGS := eng
+  
+Ubuntu 16.04 的ssh解决方案：
+      vi ~/.ssh/config
+         KexAlgorithms +diffie-hellman-group1-sha1
+     
+镜像服务器：
+    sudo service xinetd restart     #重启xinetd服务，如果这句不生效，执行下面命令
+    sudo /etc/init.d/xinetd restart  #重启xinetd服务
+     
+     
+git查看文件的修改历史命令：   
+    git blame filename
+
+关掉混淆器
+    diff --git a/nullwebview/Android.mk b/nullwebview/Android.mk
+    index a6f195e..a137a46 100644
+    --- a/nullwebview/Android.mk
+    +++ b/nullwebview/Android.mk
+    @@ -24,7 +24,7 @@ LOCAL_MODULE_TAGS := optional
+    LOCAL_SRC_FILES := $(call all-java-files-under, java)
+    -LOCAL_PROGUARD_ENABLED := full
+    +LOCAL_PROGUARD_ENABLED := disabled
+    LOCAL_PROGUARD_FLAG_FILES := proguard.flags 
+    
+文档系统地址：    
+    http://192.168.30.24:8111/SCM/SCM/blob/compile/%E7%BC%96%E8%AF%91%E7%9B%B8%E5%85%B3/%E5%B8%B8%E8%A7%81%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99%E8%A7%A3%E5%86%B3.md
+
+进入gerrit数据库：
+    ssh -p 29418 192.168.30.13 gerrit  gsql
+
+
+修改时区的方法：
+    
+    1.运行tzselect
+    
+    root@ubuntu:/# tzselect
+    在这里我们选择亚洲 Asia，确认之后选择中国（China)，最后选择北京(Beijing)
+    2.复制文件到/etc目录下
+    
+    root@ubuntu:/# cp /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
+    3.再次查看时间date -R，已经修改为北京时间
+    
+    基线升级现场Jenkins：
+        http://192.168.7.91:8081/job/Auto_ProjectUpgrade/
+        
+shell脚本字符串截取的8种方法
+    
+    假设有变量 var=http://www.aaa.com/123.htm.
+    
+    1. # 号截取，删除左边字符，保留右边字符。
+
+    echo ${var#*//}
+     其中 var 是变量名，# 号是运算符，*// 表示从左边开始删除第一个 // 号及左边的所有字符
+    即删除 http://
+    结果是 ：www.aaa.com/123.htm
+    
+    2. ## 号截取，删除左边字符，保留右边字符。
+
+    echo ${var##*/}
+    
+    ##*/ 表示从左边开始删除最后（最右边）一个 / 号及左边的所有字符
+    即删除 http://www.aaa.com/
+    
+    结果是 123.htm
+    
+    3. %号截取，删除右边字符，保留左边字符
+    
+    echo ${var%/*}
+    
+    %/* 表示从右边开始，删除第一个 / 号及右边的字符
+    
+    结果是：http://www.aaa.com
+    
+    4. %% 号截取，删除右边字符，保留左边字符
+    
+    echo ${var%%/*}
+     %%/* 表示从右边开始，删除最后（最左边）一个 / 号及右边的字符
+    结果是：http:
+    
+    5. 从左边第几个字符开始，及字符的个数
+    
+    echo ${var:0:5}
+     
+    
+    其中的 0 表示左边第一个字符开始，5 表示字符的总个数。
+    结果是：http:
+    
+    6. 从左边第几个字符开始，一直到结束。
+    
+    echo ${var:7}
+     
+    
+    其中的 7 表示左边第8个字符开始，一直到结束。
+    结果是 ：www.aaa.com/123.htm
+    
+    7. 从右边第几个字符开始，及字符的个数
+    
+    echo ${var:0-7:3}
+     
+    
+    其中的 0-7 表示右边算起第七个字符开始，3 表示字符的个数。
+    结果是：123
+    
+    8. 从右边第几个字符开始，一直到结束。
+    
+    echo ${var:0-7}
+     
+    
+    表示从右边第七个字符开始，一直到结束。
+    结果是：123.htm
+    
+    注：（左边的第一个字符是用 0 表示，右边的第一个字符用 0-1 表示）
+    
+两个不相干git库的强行merge
+   git pull  ssh-160 ap_SDM636_qc_2017.SPF.2.1_amazon_s88770aa1 --allow-unrelated-histories
+
+Q需要输入密码的问题：
+  在180上执行：
+    cat ~/.ssh/id_rsa.pub | ssh leijinyuan@192.168.38.98 "cat >> ~/.ssh/authorized_keys"
+    
+  在RD本地执行：
+    ssh hanhongbo@192.168.38.180 "cat ~/.ssh/id_rsa.pub" |  cat >> ~/.ssh/authorized_keys       
+
+6.11重启服务
+   cd /etc/init.d
+   sudo ./xinetd restart   (wingtech/Win3n9Gsrv)
+
+git hooks中获取当前分支名：
+cmd_get_branch_name="remote_branch=`git branch -a | grep ' aosp/' | awk '{print $3}'`; current_branch=${remote_branch#*/}; echo $current_branch"   
+    
+gerrit匹配bug系统  etc/gerrit.config    
+[commentlink "bugzilla"]
+  match = "([Bb]ug\\s*#?)(\\d+)"
+  link = http://bugs.wingtech.com/show_bug.cgi?id=$2    
+  
+P98997 Andy4制作差分包命令：
+  build/tools/releasetools/ota_from_target_files  -s  device/mediatek/build/releasetools/mt_ota_from_target_files   --block  -k build/target/product/security/lenovo/releasekey  -i  
+
+阿里编译命令：
+  User:
+    ./mk_aliphone.sh S87250AA1 user new YUNOS_CARRIER_CUSTOM=CMCC YUNOS_CARRIER_FAKE=true
+
+  Userdebug:
+    ./mk_aliphone.sh S87250AA1 userdebug new YUNOS_CARRIER_CUSTOM=CMCC YUNOS_CARRIER_FAKE=true
+
+
+2.16上代码存储：
+   高通公共库的公有代码：  ~/jenkins/qcom_sync/src_android
+   高通私有库的公共代码：  ~/jenkins/qcom_sync/src_ap_private_LA*     
+  
+shell去掉行首的空格tab等空白：
+   gitName=`echo $gitName | sed 's#^\s*##g'`
+shell去掉行尾的空格tab等空白：
+   gitName=`echo $gitName | sed 's#\s*$##g'`
+   
+添加 gerrit 邮箱：
+   ssh -p 29418 192.168.2.160 gerrit set-account --add-email hanhongbo@wingtech.com hanhongbo
+
+修改gerrit密码：
+   htpasswd  -d ~/gerrit_site/etc/passwd hanhongbo
+   
+三星对外gerrit上代码：
+   repo init -u ssh://192.168.2.42:29418/manifest.git -b samsung1 -m ap_SM6115_Snapdragon_Mid_2020.SPF.1.0_samsung_p85943aa1.xml
+
+LG对外gerrit
+    repo init -u ssh://192.168.2.42:29418/manifest.git -b  lgACE   -m cp_SM6350_Bitra.LA.1.0_lg_s86350aa1_lgACE.xml 
+
+从服务器同步：
+###  ssh -p 29418 cibuild@192.168.30.13 replication start [git库名]    
+
+    cd 到库下，
+    上海(路径中有work)：git push -f --set-upstream wingtech@192.168.6.11:/home/wingtech/work/review_site/git/platform/vendor/wingtech/build/tools.git --all 
+    其他(路径中没有work)git push -f --set-upstream wingtech@192.168.38.22:/home/wingtech/review_site/git/android/vendor/wingos/packages/apps/FreezingApps.git --all
+ 
+
+    repo forall -c 'git remote add ssh-server ssh://192.168.30.13:29418/$REPO_PROJECT.git $@'
+    git pull --no-ff aosp  cp_MDM9207_MDM9650.LE.1.2_wingtech_q89323aa1    
+
+去掉行末的回车和换行
+  sed -i "s#\r##g" trunk_git.log    
+
+删除git库的tag：
+   repo forall -c git push aosp --delete tag TAG_master_before_merge_r500 (TAG_qiku_line_before_merge_r00480 TAG_qiku_line_before_merge_r00500  C3G_DEV_LTE_Release_V026_181123_update)  ---20200901
+   
+mkdir创建的文件夹权限受控于 用户的 umask 值
+   umask值初始化在  /etc/login.defs   
+     UMASK           022  
+
+Q编译权限：
+    ftp 192.168.2.100
+    Uploads/project_rights/build_right.config
+    wtstring
+    111111       
+    
+镜像服务重启：
+    sudo service xinetd restart     #重启xinetd服务，如果这句不生效，执行下面命令
+    sudo /etc/init.d/xinetd restart  #重启xinetd服务
+    
+域密码：
+  2019：Wingtech.com
+  2020-11-16: wt@xa01116 
+
+MTK克隆工程：
+  perl project_clone.pl -p  "/home/cibuild/public/hhb/code/P98928AA1/ap/alps" -o "mediateksample/tb8768p1_64_bsp" -n "wingtechsh/S96778AA1"  
+    
+
+添加sudo权限：
+
+    为RD添加（或者去掉）sudo权限的方法：
+    1. su  softadmin （passwd：SH00229@wt）
+
+    2. sudo -s 
+
+    ==============================================================================
+    3. chmod u+w /etc/sudoers
+
+    4. 编辑修改 /etc/sudoers，  为RD添加（或者去掉）sudo权限
+
+    5. chmod u-w /etc/sudoers
+    ==============================================================================
+
+    ===> 3.4.5 可以简化成： sudo visudo
+
+    /etc/sudoers文件修改内容如下：
+        # User privilege specification
+        root    ALL=(ALL:ALL) ALL
+        userName ALL=(ALL:ALL) ALL
+
+    6. 退出到当前用户  
+
+====================================================================================
+gerrit重启数据库
+====================================================================================
+1. gerrit.sh  stop    
+2. sudo /etc/init.d/postgresql restart  
+3.gerrit.sh  start
+
+====================================================================================
+38.180 修改mac
+====================================================================================
+修改MAC
+sudo /sbin/ifconfig eth1 hw ether FC:4D:D4:39:02:F3
+启用网卡
+sudo /sbin/ifconfig eth1 up
+
+关闭网卡（注意用ifconfig查看网卡名称是否为eth1）
+sudo /sbin/ifconfig eth1 down
+
+=====================================================================================
+Gerrit查询：
+=====================================================================================
+  默认 AND
+  OR
+  NOT
+  
+  --format JSON
+
+ssh -p 29418 192.168.30.13 gerrit query branch:"ap_MT6833_r0.mp3_samsung_s96801aa1"  OR "branch:cp_MT6833_r0.mp3_samsung_s96801aa1"
+
+ssh -p 29418 192.168.30.13 gerrit query --format=JSON branch:ap_MT6853_r0.mp1_wingtech_z00667aa2  after:2021-06-30  before:2021-07-10
+
+
+关闭 ssl认证：
+   git config --global http.sslverify false
+
+卸载python3
+   sudo apt-get remove python3
+卸载依赖
+   sudo apt-get remove --auto-remove python3
+清除:
+   sudo apt-get purge python3   或   sudo apt-get purge --auto-remove python3
+   
+高通切包：
+  python checksparse.py -i rawprogram0.xml -o rawprogram_unsparse0.xml -s ./ -s . -t ./
+
+
+
+PLATFORM_VERSION_CODENAME=REL
+PLATFORM_VERSION=12
+TARGET_PRODUCT=full_S96818AA1
+TARGET_BUILD_VARIANT=userdebug
+TARGET_BUILD_TYPE=release
+TARGET_ARCH=arm64
+TARGET_ARCH_VARIANT=armv8-2a
+TARGET_CPU_VARIANT=cortex-a55
+TARGET_2ND_ARCH=arm
+TARGET_2ND_ARCH_VARIANT=armv8-2a
+TARGET_2ND_CPU_VARIANT=cortex-a55
+HOST_ARCH=x86_64
+HOST_2ND_ARCH=x86
+HOST_OS=linux
+HOST_OS_EXTRA=Linux-5.15.0-67-generic-x86_64-Ubuntu-20.04.5-LTS
+HOST_CROSS_OS=windows
+HOST_CROSS_ARCH=x86
+HOST_CROSS_2ND_ARCH=x86_64
+HOST_BUILD_TYPE=release
+BUILD_ID=SP1A.210812.016
+OUT_DIR=out
+
+[git depth]
+   (1) repo init 使用了 --depth=1 后：
+     .repo\manifests\.git\config 中，新增字段：
+           [repo]
+	          depth = 1
+
+   (2).repo/projects/[git仓.git] 下增加了文件：
+   	    shallow
+
+   (3)代码库的 .git/ 下新增文件：
+        shallow
+	
+.netrc 起作用的配置命令：
+   git config --global  credential.helper store  
+  
+git add时强制要求添加修改人邮箱：
+   /usr/local/bin/  下新增文件： git_script2
+
+
+
