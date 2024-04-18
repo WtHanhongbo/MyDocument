@@ -7,7 +7,7 @@ from sympy import *
 
 
 #已知数据的数量
-ICOUNT = 3 
+ICOUNT = 10 
 
 #需要计算的期数序数
 NextTerm = 24014 
@@ -50,6 +50,15 @@ def Read_Excel(filePath,SheetNo,RowNum,ColNum):
 
     return number
 
+def Get_Excel_colNum(filePath,SheetNo):
+
+    workbook = xlrd.open_workbook(filePath)
+    sheet = workbook.sheets()[SheetNo]   #通过索引顺序获取
+    #sheet = workbook.sheet_by_name("Sheet1")  #通过名称获取   
+    number = sheet.nrows 
+
+    return number
+
 
 if __name__=="__main__":
 
@@ -60,10 +69,13 @@ if __name__=="__main__":
      
     # 保存自变量，第0列，期数
     x_value = np.arange(1,ICOUNT+1,1)
-    for i in range(ICOUNT): 
-        x_value[i] = Read_Excel(EXCELFILE,0,i+1,0) 
+    N_ColNum = Get_Excel_colNum(EXCELFILE,0)    
     
-    print("line 61: x_value is %s"%x_value)    
+    for i in range(ICOUNT): 
+        x_value[i] = Read_Excel(EXCELFILE,0,N_ColNum-ICOUNT+i,0) 
+    
+    print("line 77: x_value is %s"%x_value)    
+    print("line 78: N_ColNum is %s"%N_ColNum) 
     
     # 从表格读取
     VolData = [0]* ICOUNT
@@ -74,10 +86,10 @@ if __name__=="__main__":
 
         # 读取表格的第 j+1 列
         for i in range(ICOUNT): 
-            VolData[i] = Read_Excel(EXCELFILE,0,i+1,j+1)
+            VolData[i] = Read_Excel(EXCELFILE,0,N_ColNum-ICOUNT+i,j+1)
 
         y_value = VolData
-        print("line 80: y_value is %s"%y_value)
+        print("line 92: y_value is %s"%y_value)
     
         newton_function = Newton(x_value,y_value)
         print("N(x)=",newton_function)
