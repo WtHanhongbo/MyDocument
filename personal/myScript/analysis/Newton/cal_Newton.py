@@ -7,7 +7,7 @@ from sympy import *
 
 
 #已知数据的数量
-ICOUNT = 10 
+ICOUNT = 13 
 
 #需要计算的期数序数
 NextTerm = 24014 

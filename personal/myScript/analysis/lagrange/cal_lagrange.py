@@ -2,11 +2,13 @@
 # _*_ coding:utf-8 _*_
 
 import  xlrd
+import random
 import numpy as np
 from sympy import *
 
 #已知数据的数量
-ICOUNT = 5
+ICOUNT = 14
+
 
 #已知数据的来源表格
 EXCELFILE = "data.xls"
@@ -71,6 +73,7 @@ if __name__=="__main__":
     iResult_1 = [0] * 7
     iResult_2 = [0] * 7
     iResult_3 = [0] * 7
+    iResult_4 = [0] * 7
 
     N_ColNum = Get_Excel_colNum(EXCELFILE,0)
     print("line 76: ICOUNT is %s"%ICOUNT) 
@@ -79,7 +82,7 @@ if __name__=="__main__":
     # 保存自变量，第0列，期数
     x_value = np.arange(1,ICOUNT+1,1)
     for i in range(ICOUNT): 
-        x_value[i] = Read_Excel(EXCELFILE,0,N_ColNum-ICOUNT+i,0) 
+        x_value[i] = Read_Excel(EXCELFILE,0, N_ColNum - ICOUNT + i, 0) 
     x_to_interpolate = x_value[ICOUNT-1] + 1   
 
     print("line 74: x_value is %s"%x_value)  
@@ -88,14 +91,14 @@ if __name__=="__main__":
     # 从表格读取
     VolData = [0]* ICOUNT
 
-
+    # iResult_1 差值结果
     # j 从0 循环到 7
     for j in range(7): 
         print("line 81：The %s ’th data begin:"%(j+1))
 
         # 读取表格的第 j+1 列
         for i in range(ICOUNT): 
-            VolData[i] = Read_Excel(EXCELFILE,0,N_ColNum-ICOUNT+i,j+1)
+            VolData[i] = Read_Excel(EXCELFILE,0, N_ColNum - ICOUNT + i,j+1)
 
         #####暂时先保持现状：后面考虑表格转为CSV，从文档末尾取倒数 ICOUNT 行。 可能会有转置操作
         y_value = VolData
@@ -109,15 +112,27 @@ if __name__=="__main__":
 
     
     print("line 111： The first data iResult_1 === %s"%iResult_1)
-        
+
+    # iResult_2： 对iResult_1 取整        
     for i in range(7):
         iResult_2[i] = round(iResult_1[i])
         
     print("line 116： The second data iResult_2 === %s"%iResult_2)        
 
+    # iResult_3： 对iResult_2取余，修正到正确的区间 
     for i in range(6):
         iResult_3[i] = iResult_2[i] % 33
 
     iResult_3[6] = iResult_2[6] % 16
     
     print("line 123：The third data iResult_3 === %s"%iResult_3)
+    
+    # iResult_4： 对iResult_3 随机化
+    for i in range(6):
+        iResult_4[i] = round(iResult_3[i] * random.random()) % 33
+
+    iResult_4[6] = round(iResult_3[6] * random.random()) % 33
+
+    print("line 132：The forth data iResult_4 === %s"%iResult_4)    
+    
+    
