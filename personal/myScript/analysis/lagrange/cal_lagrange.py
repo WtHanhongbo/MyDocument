@@ -2,13 +2,13 @@
 # _*_ coding:utf-8 _*_
 
 import  xlrd
+import sys
 import random
 import numpy as np
 from sympy import *
 
-#已知数据的数量
-ICOUNT = 14
-
+#已知数据的数量, 默认为5；调用脚本时也可以以参数形式带入
+ICOUNT = 5
 
 #已知数据的来源表格
 EXCELFILE = "data.xls"
@@ -26,7 +26,6 @@ def Get_Excel_colNum(filePath,SheetNo):
 
     workbook = xlrd.open_workbook(filePath)
     sheet = workbook.sheets()[SheetNo]   #通过索引顺序获取
-    #sheet = workbook.sheet_by_name("Sheet1")  #通过名称获取   
     number = sheet.nrows 
 
     return number
@@ -56,18 +55,16 @@ def lagrange_interpolation(x_points, y_points, x_target):
         lagrange_polynomial += li
     return lagrange_polynomial
 
-# 示例数据
-# x_data = np.array([1.0, 2.0, 3.0, 4.0])
-# y_data = np.array([5.0, 9.0, 17.0, 33.0])
-
-# 目标x值
-# x_to_interpolate = 2.5
-
-# 使用拉格朗日插值计算目标值
-# y_interpolated = lagrange_interpolation(x_data, y_data, x_to_interpolate)
-# print(f"在x={x_to_interpolate}处的插值结果为：y={y_interpolated}")
-
 if __name__=="__main__":
+
+    # 获取参数
+    paras = sys.argv[1:]
+    print("the length of paras is: %s"%(len(paras)))
+
+    # 如果执行脚本时带有参数，从脚本参数获取iCount的值
+    if (len(paras) > 0):
+        print("paras[0] == %s"%(paras[0]))
+        ICOUNT = int(paras[0])
 
     # 保存最终输出的结果, 固定为 “6+1=7” 个
     iResult_1 = [0] * 7
@@ -75,18 +72,28 @@ if __name__=="__main__":
     iResult_3 = [0] * 7
     iResult_4 = [0] * 7
 
+    #获取表格数据总行数
     N_ColNum = Get_Excel_colNum(EXCELFILE,0)
-    print("line 76: ICOUNT is %s"%ICOUNT) 
-    print("line 77: N_ColNum is %s"%N_ColNum) 
     
-    # 保存自变量，第0列，期数
+    print("ICOUNT is： %s"%ICOUNT) 
+    print("N_ColNum is：%s"%N_ColNum) 
+    
+    if (ICOUNT >= N_ColNum):
+        print ("ICOUNT >= N_ColNum, error, exit" )
+        exit()
+    
+    # 保存自变量，第0列，期数， 初始化为全1
     x_value = np.arange(1,ICOUNT+1,1)
+
+    # 读取表格第一列
     for i in range(ICOUNT): 
         x_value[i] = Read_Excel(EXCELFILE,0, N_ColNum - ICOUNT + i, 0) 
+
+    # 预测的期数
     x_to_interpolate = x_value[ICOUNT-1] + 1   
 
-    print("line 74: x_value is %s"%x_value)  
-    print("line 75: x_to_interpolate is %s"%x_to_interpolate)
+    print("the first col x_value is： %s"%x_value)  
+    print("x_to_interpolate is %s"%x_to_interpolate)
     
     # 从表格读取
     VolData = [0]* ICOUNT
@@ -94,30 +101,29 @@ if __name__=="__main__":
     # iResult_1 差值结果
     # j 从0 循环到 7
     for j in range(7): 
-        print("line 81：The %s ’th data begin:"%(j+1))
+        print("The %s ’th data begin:"%(j+1))
 
         # 读取表格的第 j+1 列
         for i in range(ICOUNT): 
             VolData[i] = Read_Excel(EXCELFILE,0, N_ColNum - ICOUNT + i,j+1)
 
-        #####暂时先保持现状：后面考虑表格转为CSV，从文档末尾取倒数 ICOUNT 行。 可能会有转置操作
         y_value = VolData
-        print("line 102: y_value is %s"%y_value)
+        print("y_value is %s"%y_value)
     
         y_interpolated = lagrange_interpolation(x_value, y_value, x_to_interpolate)
         
-        print("line 106： y_interpolated=",y_interpolated)
+        print("y_interpolated=",y_interpolated)
     
         iResult_1[j] = y_interpolated
 
     
-    print("line 111： The first data iResult_1 === %s"%iResult_1)
+    print("The first data iResult_1 === %s"%iResult_1)
 
     # iResult_2： 对iResult_1 取整        
     for i in range(7):
         iResult_2[i] = round(iResult_1[i])
         
-    print("line 116： The second data iResult_2 === %s"%iResult_2)        
+    print("The second data iResult_2 === %s"%iResult_2)        
 
     # iResult_3： 对iResult_2取余，修正到正确的区间 
     for i in range(6):
@@ -125,7 +131,7 @@ if __name__=="__main__":
 
     iResult_3[6] = iResult_2[6] % 16
     
-    print("line 123：The third data iResult_3 === %s"%iResult_3)
+    print("The third data iResult_3 === %s"%iResult_3)
     
     # iResult_4： 对iResult_3 随机化
     for i in range(6):
