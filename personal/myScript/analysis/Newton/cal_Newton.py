@@ -2,18 +2,21 @@
 # _*_ coding:utf-8 _*_
 
 import  xlrd
+import sys
+import random
 import numpy as np
 from sympy import *
 
 
 #已知数据的数量
-ICOUNT = 13 
+ICOUNT = 15 
+
 
 #需要计算的期数序数
 NextTerm = 24014 
 
 #已知数据的来源表格
-EXCELFILE = "data.xls"
+EXCELFILE = "../previous_data.xls"
 
 #定义自变量x
 X = symbols("x")
@@ -62,6 +65,13 @@ def Get_Excel_colNum(filePath,SheetNo):
 
 if __name__=="__main__":
 
+    # 获取参数
+    paras = sys.argv[1:]
+    print("the length of paras is: %s"%(len(paras)))
+    # 如果执行脚本时带有参数，从脚本参数获取iCount的值
+    if (len(paras) > 0):
+        print("paras[0] == %s"%(paras[0]))
+        ICOUNT = int(paras[0])
     # 保存最终输出的结果, 固定为 “6+1=7” 个
     iResult_1 = [0] * 7
     iResult_2 = [0] * 7
@@ -70,12 +80,20 @@ if __name__=="__main__":
     # 保存自变量，第0列，期数
     x_value = np.arange(1,ICOUNT+1,1)
     N_ColNum = Get_Excel_colNum(EXCELFILE,0)    
+
+    print("The cal base number is： %s"%ICOUNT) 
+    print("the mount of excel lines is：%s"%N_ColNum) 
+    if (ICOUNT >= N_ColNum):
+        print ("ICOUNT >= N_ColNum, error, exit" )
+        exit()
     
     for i in range(ICOUNT): 
         x_value[i] = Read_Excel(EXCELFILE,0,N_ColNum-ICOUNT+i,0) 
     
-    print("line 77: x_value is %s"%x_value)    
-    print("line 78: N_ColNum is %s"%N_ColNum) 
+    print("the first col x_value is： %s"%x_value)  
+
+
+
     
     # 从表格读取
     VolData = [0]* ICOUNT
@@ -97,16 +115,16 @@ if __name__=="__main__":
         iResult_1[j] = newton_function.evalf(subs={X:NextTerm})
 
     
-    print("The first data iResult_1 === %s"%iResult_1)
+    print("The data_1 which newton interpolation is: %s"%iResult_1)
         
     for i in range(7):
         iResult_2[i] = round(iResult_1[i])
         
-    print("The second data iResult_2 === %s"%iResult_2)        
+    print("The data_2 which int form data_1 is: %s"%iResult_2)        
 
     for i in range(6):
         iResult_3[i] = iResult_2[i] % 33
 
     iResult_3[6] = iResult_2[6] % 16
     
-    print("The third data iResult_3 === %s"%iResult_3)
+    print("The data_3 which modify data_2 to correct range is: %s"%iResult_3)

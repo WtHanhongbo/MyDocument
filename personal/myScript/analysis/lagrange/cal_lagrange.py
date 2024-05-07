@@ -11,7 +11,7 @@ from sympy import *
 ICOUNT = 5
 
 #已知数据的来源表格
-EXCELFILE = "data.xls"
+EXCELFILE = "../previous_data.xls"
 
 def Read_Excel(filePath,SheetNo,RowNum,ColNum):
 
@@ -75,8 +75,8 @@ if __name__=="__main__":
     #获取表格数据总行数
     N_ColNum = Get_Excel_colNum(EXCELFILE,0)
     
-    print("ICOUNT is： %s"%ICOUNT) 
-    print("N_ColNum is：%s"%N_ColNum) 
+    print("The cal base number is： %s"%ICOUNT) 
+    print("the mount of excel lines is：%s"%N_ColNum) 
     
     if (ICOUNT >= N_ColNum):
         print ("ICOUNT >= N_ColNum, error, exit" )
@@ -117,13 +117,13 @@ if __name__=="__main__":
         iResult_1[j] = y_interpolated
 
     
-    print("The first data iResult_1 === %s"%iResult_1)
+    print("The data_1 which lagrange interpolation is: %s"%iResult_1)
 
     # iResult_2： 对iResult_1 取整        
     for i in range(7):
         iResult_2[i] = round(iResult_1[i])
         
-    print("The second data iResult_2 === %s"%iResult_2)        
+    print("The data_2 which int form data_1 is: %s"%iResult_2)        
 
     # iResult_3： 对iResult_2取余，修正到正确的区间 
     for i in range(6):
@@ -131,7 +131,7 @@ if __name__=="__main__":
 
     iResult_3[6] = iResult_2[6] % 16
     
-    print("The third data iResult_3 === %s"%iResult_3)
+    print("The data_3 which modify data_2 to correct range is: %s"%iResult_3)
     
     # iResult_4： 对iResult_3 随机化
     for i in range(6):
@@ -139,6 +139,6 @@ if __name__=="__main__":
 
     iResult_4[6] = round(iResult_3[6] * random.random()) % 33
 
-    print("line 132：The forth data iResult_4 === %s"%iResult_4)    
+    print("The data_4 which to make data_3 random is: %s"%iResult_4)    
     
     
