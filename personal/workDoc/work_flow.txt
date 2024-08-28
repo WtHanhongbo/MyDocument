@@ -418,17 +418,25 @@ git查看文件的修改历史命令：
 
 修改时区的方法：
     
-    1.运行tzselect
+   方法1： 
+	#1.运行tzselect
     
-    root@ubuntu:/# tzselect
-    在这里我们选择亚洲 Asia，确认之后选择中国（China)，最后选择北京(Beijing)
-    2.复制文件到/etc目录下
-    
-    root@ubuntu:/# cp /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
-    3.再次查看时间date -R，已经修改为北京时间
+    #root@ubuntu:/# tzselect
+    #在这里我们选择亚洲 Asia，确认之后选择中国（China)，最后选择北京(Beijing)
+    #2.复制文件到/etc目录下
+    #
+    #root@ubuntu:/# cp /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
+    #3.再次查看时间date -R，已经修改为北京时间
+
+  方法2：
+   sudo timedatectl set-timezone Asia/Shanghai
+   sudo hwclock --systohc
     
     基线升级现场Jenkins：
         http://192.168.7.91:8081/job/Auto_ProjectUpgrade/
+		
+		
+		
         
 shell脚本字符串截取的8种方法
     
@@ -661,6 +669,17 @@ ssh -p 29418 192.168.30.13 gerrit query --format=JSON branch:ap_MT6853_r0.mp1_wi
   python checksparse.py -i rawprogram0.xml -o rawprogram_unsparse0.xml -s ./ -s . -t ./
 
 
+离线安装Python pandas模块：
+    (1)在联网电脑上执行 sudo python3 -m pip install pandas
+	
+	(2)/usr/lib/python3.10/site-packages 下新增的文件和文件夹打包考本到离线的机器
+
+
+
+
+
+
+
 
 PLATFORM_VERSION_CODENAME=REL
 PLATFORM_VERSION=12
@@ -701,6 +720,28 @@ OUT_DIR=out
   
 git add时强制要求添加修改人邮箱：
    /usr/local/bin/  下新增文件： git_script2
+
+
+
+repo sync -cdf
+
+解决拉代码闻泰（库和log太大，屡次失败）
+
+    (1)git clone  --depth=1 
+	    git clone ssh://wingtech_user1@112.106.111.156:29419/WINGTECH/android14/product/prebuilts/clang/host/linux-x86 -b s-u-wt-stable --depth=1
+	 
+	(2)去掉depth限制：
+	    git fetch --unshallow
+	 
+	(4) git remote-add ssh-51 ssh://192.168.30.51:29418/product/prebuilts/clang/host/linux-x86
+	(5) git push ssh-51 HEAD:tanxianye_tmp
+
+
+vim命令：
+
+	 
+
+
 
 
 
